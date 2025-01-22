@@ -12,10 +12,10 @@ class BaseClass:
     database_read = "D:/MDH//Connections2/MDH DEV mdhephtdbdev1 to _MDHEPHT_ via READ.sde"
     scratch_gdb = ".../mdh-epht-gis-utilities/WorkingDocument/Scratch.gdb"
     output_gdb = ".../mdh-epht-gis-utilities/WorkingDocument/Outputs.gdb"
-        
 
 class CommonLayer(BaseClass):
-    def __init__(self, layer_name, year, geometry, database_table, existing_layer, geometry_layer, output_layer, copy_geometry_to_scratch_gdb, query_table_from_db_table):
+    def __init__(self, layer_name, year, geometry, database_table, existing_layer, geometry_layer, expression, output_layer, 
+                 copy_geometry_to_scratch_gdb, query_table_from_db_table):
         """
         Initialize CommonLayer with all its attributes.
         """
@@ -25,6 +25,7 @@ class CommonLayer(BaseClass):
         self.database_table = database_table
         self.existing_layer = existing_layer
         self.geometry_layer = geometry_layer
+        self.expression = expression
         self.output_layer = output_layer
         self.copy_geometry_to_scratch_gdb = copy_geometry_to_scratch_gdb
         self.query_table_from_db_table = query_table_from_db_table
@@ -37,15 +38,18 @@ class CommonLayer(BaseClass):
 
 
 class Asthma(CommonLayer):
-    def __init__(self, layer_name, output_layer, geometry, geometry_layer, existing_layer):
+    def __init__(self, layer_name, output_layer, geometry, geometry_layer, existing_layer, expression):
         """
         Initialize Asthma with its specific attributes.
         """
         database_table = f"{self.database_read} + 'MDHEPHT.epht.Asthma_NCDM_' + {geometry}"
         existing_layer = f"{self.database_read} + {existing_layer}"
+        geometry_layer = f"{self.database_read} + {geometry_layer}"
+        expression = {expression}
         copy_geometry_to_scratch_gdb = f"{self.copied_geometry} = arcpy.management.CopyFeatures({geometry_layer}, {self.scratch_gdb} + 'Copied_Geometry')"
         query_table_from_db_table = f"arcpy.management.MakeQueryTable({database_table}, 'Query_Table')"
-        super().__init__(layer_name, self.year, geometry, database_table, existing_layer, geometry_layer, output_layer, copy_geometry_to_scratch_gdb, query_table_from_db_table)
+        super().__init__(layer_name, self.year, geometry, database_table, existing_layer, geometry_layer, expression, 
+                         output_layer, copy_geometry_to_scratch_gdb, query_table_from_db_table)
 
     # Properties that are common to all instances for Asthma
     year = 2025
@@ -60,22 +64,22 @@ class AsthmaCounty(Asthma):
     _geometry = "County"
     _geometry_layer = "MDHEPHT.EPHT.GIS_County_Poly"
 
-    def __init__(self, layer_name, output_layer, existing_layer):
+    def __init__(self, layer_name, output_layer, existing_layer, expression):
         """
         Initialize CountyAsthma with its specific attributes.
         """
-        super().__init__(layer_name, output_layer, self._geometry, self._geometry_layer, existing_layer)
+        super().__init__(layer_name, output_layer, self._geometry, self._geometry_layer, existing_layer, expression)
 
 
 class AsthmaCensusTract(Asthma):
     _geometry = "CensusTract"
     _geometry_layer = "MDHEPHT.EPHT.GIS_CensusTract20_Poly"
 
-    def __init__(self, layer_name, output_layer, existing_layer):
+    def __init__(self, layer_name, output_layer, existing_layer, expression):
         """
         Initialize CensusTractAsthma with its specific attributes.
         """
-        super().__init__(layer_name, output_layer, self._geometry, self._geometry_layer, existing_layer,)
+        super().__init__(layer_name, output_layer, self._geometry, self._geometry_layer, existing_layer, expression)
 
 
 # Example usage
@@ -83,9 +87,9 @@ if __name__ == "__main__":
     # Create an instance of AsthmaCounty
     county_asthma_instance = AsthmaCounty(
         layer_name="Asthma_NCDM_GIS_AgeAdjusted_ED_County", 
-        # expression= "(TYPE_ID = 17) AND (year = year) AND (GROUPAGE_ID = 8)",
         output_layer="Asthma_NCDM_GIS_AgeAdjusted_ED_County",
-        existing_layer= "MDHEPHT.EPHT.Asthma_NCDM_GIS_AgeAdjusted_ED_County")
+        existing_layer= "MDHEPHT.EPHT.Asthma_NCDM_GIS_AgeAdjusted_ED_County",
+        expression= f"(TYPE_ID = 17) AND (YEAR = {Asthma.year}) AND (GROUPAGE_ID = 8)") 
     
     print("CountyAsthma Instance:")
     print(f"Layer Name: {county_asthma_instance.layer_name}")
@@ -94,12 +98,12 @@ if __name__ == "__main__":
     print(f"database_read: {county_asthma_instance.database_read}")
     print(f"scratch_gdb: {county_asthma_instance.scratch_gdb}")
     print(f"output_gdb: {county_asthma_instance.output_gdb}")
-
     print(f"year: {county_asthma_instance.year}")
     print(f"geometry: {county_asthma_instance.geometry}")
     print(f"database_table: {county_asthma_instance.database_table}")
     print(f"existing_layer: {county_asthma_instance.existing_layer}")
     print(f"geometry_layer: {county_asthma_instance.geometry_layer}")
+    print(f"expression: {county_asthma_instance.expression}")
     print(f"output_layer: {county_asthma_instance.output_layer}")
     print(f"Copy Geometry to scratch_gdb: {county_asthma_instance.copy_geometry_to_scratch_gdb}")
     print(f"Query Table from DB Table: {county_asthma_instance.query_table_from_db_table}")
@@ -110,7 +114,8 @@ if __name__ == "__main__":
     county_unadjusted_asthma_instance = AsthmaCounty(
         layer_name="Asthma_NCDM_GIS_Unadjusted_ED_County", 
         output_layer="Asthma_NCDM_GIS_Unadjusted_ED_County",
-        existing_layer="MDHEPHT.EPHT.Asthma_NCDM_GIS_Unadjusted_ED_County")
+        existing_layer="MDHEPHT.EPHT.Asthma_NCDM_GIS_Unadjusted_ED_County",
+        expression= f"(TYPE_ID = 18) AND (YEAR = {Asthma.year}) AND (GROUPAGE_ID = 8)")  
     
     print("CountyAsthma Instance2:")
     print(f"Layer Name: {county_unadjusted_asthma_instance.layer_name}")
@@ -124,6 +129,7 @@ if __name__ == "__main__":
     print(f"database_table: {county_unadjusted_asthma_instance.database_table}")
     print(f"existing_layer: {county_unadjusted_asthma_instance.existing_layer}")
     print(f"geometry_layer: {county_unadjusted_asthma_instance.geometry_layer}")
+    print(f"expression: {county_unadjusted_asthma_instance.expression}")
     print(f"output_layer: {county_unadjusted_asthma_instance.output_layer}")
     print(f"Copy Geometry to Scratch GDB: {county_unadjusted_asthma_instance.copy_geometry_to_scratch_gdb}")
     print(f"Query Table from DB Table: {county_unadjusted_asthma_instance.query_table_from_db_table}")
@@ -134,7 +140,8 @@ if __name__ == "__main__":
     tract_asthma_instance = AsthmaCensusTract(
         layer_name="Asthma_NCDM_GIS_Unadjusted_ED_CensusTract", 
         output_layer="Asthma_NCDM_GIS_Unadjusted_ED_CensusTract",
-        existing_layer= "MDHEPHT.EPHT.Asthma_NCDM_GIS_Unadjust ed_ED_CensusTract")
+        existing_layer= "MDHEPHT.EPHT.Asthma_NCDM_GIS_Unadjust ed_ED_CensusTract",
+        expression= f"(TYPE_ID = 18) AND (YEAR = {Asthma.year})")
     
     print("TractAsthma Instance:")
     print(f"Layer Name: {tract_asthma_instance.layer_name}")
@@ -148,6 +155,7 @@ if __name__ == "__main__":
     print(f"database_table: {tract_asthma_instance.database_table}")
     print(f"existing_layer: {tract_asthma_instance.existing_layer}")
     print(f"geometry_layer: {tract_asthma_instance.geometry_layer}")
+    print(f"expression: {tract_asthma_instance.expression}")
     print(f"output_layer: {tract_asthma_instance.output_layer}")
     print(f"Copy Geometry to Scratch GDB: {tract_asthma_instance.copy_geometry_to_scratch_gdb}")
     print(f"Query Table from DB Table: {tract_asthma_instance.query_table_from_db_table}")
