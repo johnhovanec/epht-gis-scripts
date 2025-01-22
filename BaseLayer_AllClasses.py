@@ -85,6 +85,7 @@ if __name__ == "__main__":
     print(f"allow_overwriting_output: {county_asthma_instance.allow_overwriting_output}")
     print(f"database_read: {county_asthma_instance.database_read}")
     print(f"scratch_gdb: {county_asthma_instance.scratch_gdb}")
+    print(f"output_gdb: {county_asthma_instance.output_gdb}")
 
     print(f"Year: {county_asthma_instance.year}")
     print(f"Geometry: {county_asthma_instance.geometry}")
@@ -93,22 +94,6 @@ if __name__ == "__main__":
     print(f"Output Layer: {county_asthma_instance.output_layer}")
     print(f"Copy Geometry to Scratch GDB: {county_asthma_instance.copy_geometry_to_scratch_gdb}")
     print(f"Query Table from DB Table: {county_asthma_instance.query_table_from_db_table}")
-
-    # print("CountyAsthma Instance:")
-    # print(f"import_modules: {county_asthma_instance.import_modules}")
-    # print(f"allow_overwriting_output: {county_asthma_instance.allow_overwriting_output}")
-    # print(f"database_read: {county_asthma_instance.database_read}")
-    # print(f"scratch_gdb: {county_asthma_instance.scratch_gdb}")
-    # print(f"output_gdb: {county_asthma_instance.output_gdb}")
-    # print(f"Layer Name: {county_asthma_instance.layer_name}")
-    # print(f"Year: {county_asthma_instance.year}")
-    # print(f"Geometry: {county_asthma_instance.geometry}")
-    # print(f"Database Table: {county_asthma_instance.database_table}")
-    # print(f"Geometry Layer: {county_asthma_instance.geometry_layer}")
-    # print(f"Output Layer: {county_asthma_instance.output_layer}")
-    # print(f"Copy Geometry to Scratch GDB: {county_asthma_instance.copy_geometry_to_scratch_gdb}")
-    # print(f"Query Table from DB Table: {county_asthma_instance.query_table_from_db_table}")
-
 
     print("\n")
 
@@ -121,6 +106,7 @@ if __name__ == "__main__":
     print(f"allow_overwriting_output: {county_unadjusted_asthma_instance.allow_overwriting_output}")
     print(f"database_read: {county_unadjusted_asthma_instance.database_read}")
     print(f"scratch_gdb: {county_unadjusted_asthma_instance.scratch_gdb}")
+    print(f"output_gdb: {county_unadjusted_asthma_instance.output_gdb}")
     print(f"Year: {county_unadjusted_asthma_instance.year}")
     print(f"Geometry: {county_unadjusted_asthma_instance.geometry}")
     print(f"Database Table: {county_unadjusted_asthma_instance.database_table}")
@@ -128,23 +114,6 @@ if __name__ == "__main__":
     print(f"Output Layer: {county_unadjusted_asthma_instance.output_layer}")
     print(f"Copy Geometry to Scratch GDB: {county_unadjusted_asthma_instance.copy_geometry_to_scratch_gdb}")
     print(f"Query Table from DB Table: {county_unadjusted_asthma_instance.query_table_from_db_table}")
-    
-    # print("CountyAsthma Instance 2:")
-    # print(f"import_modules: {county_unadjusted_asthma_instance.import_modules}")
-    # print(f"allow_overwriting_output: {county_unadjusted_asthma_instance.allow_overwriting_output}")
-    # print(f"database_read: {county_unadjusted_asthma_instance.database_read}")
-    # print(f"scratch_gdb: {county_unadjusted_asthma_instance.scratch_gdb}")
-    # print(f"output_gdb: {county_unadjusted_asthma_instance.output_gdb}")
-    # print(f"Layer Name: {county_unadjusted_asthma_instance.layer_name}")
-    # print(f"Year: {county_unadjusted_asthma_instance.year}")
-    # print(f"Geometry: {county_unadjusted_asthma_instance.geometry}")
-    # print(f"Database Table: {county_unadjusted_asthma_instance.database_table}")
-    # print(f"Geometry Layer: {county_unadjusted_asthma_instance.geometry_layer}")
-    # print(f"Output Layer: {county_unadjusted_asthma_instance.output_layer}")
-    # print(f"Copy Geometry to Scratch GDB: {county_unadjusted_asthma_instance.copy_geometry_to_scratch_gdb}")
-    # print(f"Query Table from DB Table: {county_unadjusted_asthma_instance.query_table_from_db_table}")
-    
-
 
     print("\n")
 
@@ -157,6 +126,7 @@ if __name__ == "__main__":
     print(f"allow_overwriting_output: {tract_asthma_instance.allow_overwriting_output}")
     print(f"database_read: {tract_asthma_instance.database_read}")
     print(f"scratch_gdb: {tract_asthma_instance.scratch_gdb}")
+    print(f"output_gdb: {tract_asthma_instance.output_gdb}")
     print(f"Year: {tract_asthma_instance.year}")
     print(f"Geometry: {tract_asthma_instance.geometry}")
     print(f"Database Table: {tract_asthma_instance.database_table}")
@@ -164,21 +134,6 @@ if __name__ == "__main__":
     print(f"Output Layer: {tract_asthma_instance.output_layer}")
     print(f"Copy Geometry to Scratch GDB: {tract_asthma_instance.copy_geometry_to_scratch_gdb}")
     print(f"Query Table from DB Table: {tract_asthma_instance.query_table_from_db_table}")
-
-    # print("CountyAsthma Instance:")
-    # print(f"import_modules: {tract_asthma_instance.import_modules}")
-    # print(f"allow_overwriting_output: {tract_asthma_instance.allow_overwriting_output}")
-    # print(f"database_read: {tract_asthma_instance.database_read}")
-    # print(f"output_gdb: {tract_asthma_instance.output_gdb}")
-    # print(f"scratch_gdb: {tract_asthma_instance.scratch_gdb}")
-    # print(f"Layer Name: {tract_asthma_instance.layer_name}")
-    # print(f"Year: {tract_asthma_instance.year}")
-    # print(f"Geometry: {tract_asthma_instance.geometry}")
-    # print(f"Database Table: {tract_asthma_instance.database_table}")
-    # print(f"Geometry Layer: {tract_asthma_instance.geometry_layer}")
-    # print(f"Output Layer: {tract_asthma_instance.output_layer}")
-    # print(f"Copy Geometry to Scratch GDB: {tract_asthma_instance.copy_geometry_to_scratch_gdb}")
-    # print(f"Query Table from DB Table: {tract_asthma_instance.query_table_from_db_table}")
 
 
 
