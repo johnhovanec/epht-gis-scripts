@@ -15,7 +15,7 @@ class BaseClass:
 
 class CommonLayer(BaseClass):
     def __init__(self, layer_name, year, geometry, database_table, existing_layer, geometry_layer, expression, input_join_field,
-                 output_layer, copy_geometry_to_scratch_gdb, query_table_from_db_table):
+                 target_join_field, output_layer, copy_geometry_to_scratch_gdb, query_table_from_db_table):
         """
         Initialize CommonLayer with all its attributes.
         """
@@ -27,6 +27,7 @@ class CommonLayer(BaseClass):
         self.geometry_layer = geometry_layer
         self.expression = expression
         self.input_join_field = input_join_field
+        self.target_join_field = target_join_field
         self.output_layer = output_layer
         self.copy_geometry_to_scratch_gdb = copy_geometry_to_scratch_gdb
         self.query_table_from_db_table = query_table_from_db_table
@@ -39,7 +40,8 @@ class CommonLayer(BaseClass):
 
 
 class Asthma(CommonLayer):
-    def __init__(self, layer_name, output_layer, geometry, geometry_layer, existing_layer, expression, input_join_field):
+    def __init__(self, layer_name, output_layer, geometry, geometry_layer, existing_layer, expression, input_join_field,
+                 target_join_field):
         """
         Initialize Asthma with its specific attributes.
         """
@@ -48,10 +50,11 @@ class Asthma(CommonLayer):
         geometry_layer = f"{self.database_read} + {geometry_layer}"
         expression = expression
         input_join_field = input_join_field
+        target_join_field = target_join_field
         copy_geometry_to_scratch_gdb = f"{self.copied_geometry} = arcpy.management.CopyFeatures({geometry_layer}, {self.scratch_gdb} + 'Copied_Geometry')"
         query_table_from_db_table = f"arcpy.management.MakeQueryTable({database_table}, 'Query_Table')"
         super().__init__(layer_name, self.year, geometry, database_table, existing_layer, geometry_layer, expression, 
-                         input_join_field, output_layer, copy_geometry_to_scratch_gdb, query_table_from_db_table)
+                         input_join_field, target_join_field, output_layer, copy_geometry_to_scratch_gdb, query_table_from_db_table)
 
     # Properties that are common to all instances for Asthma
     year = 2025
@@ -63,29 +66,35 @@ class Asthma(CommonLayer):
     empty_layer = None  # Placeholder for dynamically created variable that will need to be set to result of delete_rows_from_existing_layer
 
 class AsthmaCounty(Asthma):
-    _geometry = "County"
-    _geometry_layer = "MDHEPHT.EPHT.GIS_County_Poly"
-    _input_join_field = "MD_CODE"
-
     def __init__(self, layer_name, output_layer, existing_layer, expression):
         """
         Initialize CountyAsthma with its specific attributes.
         """
         super().__init__(layer_name, output_layer, self._geometry, self._geometry_layer, 
-                         existing_layer, expression, self._input_join_field)
+                         existing_layer, expression, self._input_join_field, self._target_join_field)
+    
+    # Properties that are specific to County instances 
+    _geometry = "County"
+    _geometry_layer = "MDHEPHT.EPHT.GIS_County_Poly"
+    _input_join_field = "MD_CODE"
+    _target_join_field = "MDCODE"
 
 
 class AsthmaCensusTract(Asthma):
-    _geometry = "CensusTract"
-    _geometry_layer = "MDHEPHT.EPHT.GIS_CensusTract20_Poly"
-    _input_join_field = "GEOID"
-
     def __init__(self, layer_name, output_layer, existing_layer, expression):
         """
         Initialize CensusTractAsthma with its specific attributes.
         """
         super().__init__(layer_name, output_layer, self._geometry, self._geometry_layer,
-                         existing_layer, expression, self._input_join_field)
+                         existing_layer, expression, self._input_join_field, self._target_join_field)
+    
+    # Properties that are specific to CensusTract instances     
+    _geometry = "CensusTract"
+    _geometry_layer = "MDHEPHT.EPHT.GIS_CensusTract20_Poly"
+    _input_join_field = "GEOID"
+    _target_join_field = "TRACTCODE"
+
+
 
 
 # Example usage
@@ -111,6 +120,7 @@ if __name__ == "__main__":
     print(f"geometry_layer: {county_asthma_instance.geometry_layer}")
     print(f"expression: {county_asthma_instance.expression}")
     print(f"input_join_field: {county_asthma_instance.input_join_field}")
+    print(f"target_join_field: {county_asthma_instance.target_join_field}")
     print(f"output_layer: {county_asthma_instance.output_layer}")
     print(f"Copy Geometry to scratch_gdb: {county_asthma_instance.copy_geometry_to_scratch_gdb}")
     print(f"Query Table from DB Table: {county_asthma_instance.query_table_from_db_table}")
@@ -138,6 +148,7 @@ if __name__ == "__main__":
     print(f"geometry_layer: {county_unadjusted_asthma_instance.geometry_layer}")
     print(f"expression: {county_unadjusted_asthma_instance.expression}")
     print(f"input_join_field: {county_unadjusted_asthma_instance.input_join_field}")
+    print(f"target_join_field: {county_unadjusted_asthma_instance.target_join_field}")
     print(f"output_layer: {county_unadjusted_asthma_instance.output_layer}")
     print(f"Copy Geometry to Scratch GDB: {county_unadjusted_asthma_instance.copy_geometry_to_scratch_gdb}")
     print(f"Query Table from DB Table: {county_unadjusted_asthma_instance.query_table_from_db_table}")
@@ -165,6 +176,7 @@ if __name__ == "__main__":
     print(f"geometry_layer: {tract_asthma_instance.geometry_layer}")
     print(f"expression: {tract_asthma_instance.expression}")
     print(f"input_join_field: {tract_asthma_instance.input_join_field}")
+    print(f"target_join_field: {tract_asthma_instance.target_join_field}")
     print(f"output_layer: {tract_asthma_instance.output_layer}")
     print(f"Copy Geometry to Scratch GDB: {tract_asthma_instance.copy_geometry_to_scratch_gdb}")
     print(f"Query Table from DB Table: {tract_asthma_instance.query_table_from_db_table}")
