@@ -61,13 +61,6 @@ class Asthma(CommonLayer):
         expression = expression
         input_join_field = input_join_field
         target_join_field = target_join_field
-        # copy_geometry_to_scratch_gdb = f"{self._copied_geometry} = arcpy.management.CopyFeatures({geometry_layer}, {self.scratch_gdb} + 'Copied_Geometry')"
-        # query_table_from_db_table = f"{self._query_table} = arcpy.management.MakeQueryTable({database_table}, 'Query_Table')"
-        # save_query_table_to_scratch_gdb = f"{self._queried_table} = arcpy.conversion.TableToTable({self._query_table}, {self.scratch_gdb}, 'Queried_Table', {expression})"
-        # join_queried_table_to_geometry = f"{self._geometry_with_join} = arcpy.management.JoinField({self._copied_geometry}, {input_join_field}, {self._queried_table}, {target_join_field})"
-        # copy_layer_to_output_gdb = f"{self._copied_layer} = arcpy.conversion.FeatureClassToFeatureClass({existing_layer}, {self.output_gdb}, {output_layer})"
-        # delete_rows_from_existing_layer = f"{self._empty_layer} = arcpy.management.DeleteRows({self._copied_layer})"
-        # append_queried_table_to_existing_layer = f"arcpy.management.Append({self._geometry_with_join}, {self.output_gdb} + {output_layer}, 'NO_TEST')"        
 
         super().__init__(layer_name, self._year, geometry, database_table, existing_layer, geometry_layer, expression, 
                          input_join_field, target_join_field, output_layer, self.copy_geometry_to_scratch_gdb, 
