@@ -58,13 +58,13 @@ class Asthma(CommonLayer):
         delete_rows_from_existing_layer = f"{self.empty_layer} = arcpy.management.DeleteRows({self.copied_layer})"
         append_queried_table_to_existing_layer = f"arcpy.management.Append({self.geometry_with_join}, {self.output_gdb} + {output_layer}, 'NO_TEST')"
 
-        super().__init__(layer_name, self.year, geometry, database_table, existing_layer, geometry_layer, expression, 
+        super().__init__(layer_name, self._year, geometry, database_table, existing_layer, geometry_layer, expression, 
                          input_join_field, target_join_field, output_layer, copy_geometry_to_scratch_gdb, 
                          query_table_from_db_table, save_query_table_to_scratch_gdb, join_queried_table_to_geometry, copy_layer_to_output_gdb,
                          delete_rows_from_existing_layer, append_queried_table_to_existing_layer)
 
     # Properties that are common to all instances for Asthma
-    year = 2025
+    _year = 2025
     copied_geometry = None  # Placeholder for dynamically created variable that will need to be set to result of copy_geometry_to_scratch_gdb
     query_table = None  # Placeholder for dynamically created variable that will need to be set to result of query_table_from_db_table
     queried_table = None  # Placeholder for dynamically created variable that will need to be set to result of save_query_table_to_scratch_gdb
@@ -109,7 +109,7 @@ if __name__ == "__main__":
         layer_name="Asthma_NCDM_GIS_AgeAdjusted_ED_County", 
         output_layer="Asthma_NCDM_GIS_AgeAdjusted_ED_County",
         existing_layer= "MDHEPHT.EPHT.Asthma_NCDM_GIS_AgeAdjusted_ED_County",
-        expression= f"(TYPE_ID = 17) AND (YEAR = {Asthma.year}) AND (GROUPAGE_ID = 8)") 
+        expression= f"(TYPE_ID = 17) AND (YEAR = {Asthma._year}) AND (GROUPAGE_ID = 8)") 
     
     print("\n")
     print("CountyAsthma Instance:")
@@ -143,7 +143,7 @@ if __name__ == "__main__":
         layer_name="Asthma_NCDM_GIS_Unadjusted_ED_County", 
         output_layer="Asthma_NCDM_GIS_Unadjusted_ED_County",
         existing_layer="MDHEPHT.EPHT.Asthma_NCDM_GIS_Unadjusted_ED_County",
-        expression= f"(TYPE_ID = 18) AND (YEAR = {Asthma.year}) AND (GROUPAGE_ID = 8)")  
+        expression= f"(TYPE_ID = 18) AND (YEAR = {Asthma._year}) AND (GROUPAGE_ID = 8)")  
     
     print("CountyAsthma Instance2:")
     print(f"Layer Name: {county_unadjusted_asthma_instance.layer_name}")
@@ -176,7 +176,7 @@ if __name__ == "__main__":
         layer_name="Asthma_NCDM_GIS_Unadjusted_ED_CensusTract", 
         output_layer="Asthma_NCDM_GIS_Unadjusted_ED_CensusTract",
         existing_layer= "MDHEPHT.EPHT.Asthma_NCDM_GIS_Unadjusted_ED_CensusTract",
-        expression= f"(TYPE_ID = 18) AND (YEAR = {Asthma.year})")
+        expression= f"(TYPE_ID = 18) AND (YEAR = {Asthma._year})")
     
     print("TractAsthma Instance:")
     print(f"Layer Name: {tract_asthma_instance.layer_name}")
