@@ -38,6 +38,17 @@ class CommonLayer(BaseClass):
         self.delete_rows_from_existing_layer = delete_rows_from_existing_layer
         self.append_queried_table_to_existing_layer = append_queried_table_to_existing_layer
 
+    # Properties that store the results of actions common to all instances
+    _copied_geometry = None  # Placeholder for dynamically created variable that will need to be set to result of copy_geometry_to_scratch_gdb
+    _query_table = None  # Placeholder for dynamically created variable that will need to be set to result of query_table_from_db_table
+    _queried_table = None  # Placeholder for dynamically created variable that will need to be set to result of save_query_table_to_scratch_gdb
+    _geometry_with_join = None  # Placeholder for dynamically created variable that will need to be set to result of join_queried_table_to_geometry
+    _copied_layer = None  # Placeholder for dynamically created variable that will need to be set to result of copy_layer_to_output_gdb
+    _empty_layer = None  # Placeholder for dynamically created variable that will need to be set to result of delete_rows_from_existing_layer
+
+    
+
+# Asthma example
 class Asthma(CommonLayer):
     def __init__(self, layer_name, output_layer, geometry, geometry_layer, existing_layer, expression, input_join_field,
                  target_join_field):
@@ -50,27 +61,49 @@ class Asthma(CommonLayer):
         expression = expression
         input_join_field = input_join_field
         target_join_field = target_join_field
-        copy_geometry_to_scratch_gdb = f"{self.copied_geometry} = arcpy.management.CopyFeatures({geometry_layer}, {self.scratch_gdb} + 'Copied_Geometry')"
-        query_table_from_db_table = f"{self.query_table} = arcpy.management.MakeQueryTable({database_table}, 'Query_Table')"
-        save_query_table_to_scratch_gdb = f"{self.queried_table} = arcpy.conversion.TableToTable({self.query_table}, {self.scratch_gdb}, 'Queried_Table', {expression})"
-        join_queried_table_to_geometry = f"{self.geometry_with_join} = arcpy.management.JoinField({self.copied_geometry}, {input_join_field}, {self.queried_table}, {target_join_field})"
-        copy_layer_to_output_gdb = f"{self.copied_layer} = arcpy.conversion.FeatureClassToFeatureClass({existing_layer}, {self.output_gdb}, {output_layer})"
-        delete_rows_from_existing_layer = f"{self.empty_layer} = arcpy.management.DeleteRows({self.copied_layer})"
-        append_queried_table_to_existing_layer = f"arcpy.management.Append({self.geometry_with_join}, {self.output_gdb} + {output_layer}, 'NO_TEST')"
+        # copy_geometry_to_scratch_gdb = f"{self._copied_geometry} = arcpy.management.CopyFeatures({geometry_layer}, {self.scratch_gdb} + 'Copied_Geometry')"
+        # query_table_from_db_table = f"{self._query_table} = arcpy.management.MakeQueryTable({database_table}, 'Query_Table')"
+        # save_query_table_to_scratch_gdb = f"{self._queried_table} = arcpy.conversion.TableToTable({self._query_table}, {self.scratch_gdb}, 'Queried_Table', {expression})"
+        # join_queried_table_to_geometry = f"{self._geometry_with_join} = arcpy.management.JoinField({self._copied_geometry}, {input_join_field}, {self._queried_table}, {target_join_field})"
+        # copy_layer_to_output_gdb = f"{self._copied_layer} = arcpy.conversion.FeatureClassToFeatureClass({existing_layer}, {self.output_gdb}, {output_layer})"
+        # delete_rows_from_existing_layer = f"{self._empty_layer} = arcpy.management.DeleteRows({self._copied_layer})"
+        # append_queried_table_to_existing_layer = f"arcpy.management.Append({self._geometry_with_join}, {self.output_gdb} + {output_layer}, 'NO_TEST')"        
 
         super().__init__(layer_name, self._year, geometry, database_table, existing_layer, geometry_layer, expression, 
-                         input_join_field, target_join_field, output_layer, copy_geometry_to_scratch_gdb, 
-                         query_table_from_db_table, save_query_table_to_scratch_gdb, join_queried_table_to_geometry, copy_layer_to_output_gdb,
-                         delete_rows_from_existing_layer, append_queried_table_to_existing_layer)
+                         input_join_field, target_join_field, output_layer, self.copy_geometry_to_scratch_gdb, 
+                         self.query_table_from_db_table, self.save_query_table_to_scratch_gdb, self.join_queried_table_to_geometry, 
+                         self.copy_layer_to_output_gdb, self.delete_rows_from_existing_layer, self.append_queried_table_to_existing_layer)
 
     # Properties that are common to all instances for Asthma
     _year = 2025
-    copied_geometry = None  # Placeholder for dynamically created variable that will need to be set to result of copy_geometry_to_scratch_gdb
-    query_table = None  # Placeholder for dynamically created variable that will need to be set to result of query_table_from_db_table
-    queried_table = None  # Placeholder for dynamically created variable that will need to be set to result of save_query_table_to_scratch_gdb
-    geometry_with_join = None  # Placeholder for dynamically created variable that will need to be set to result of join_queried_table_to_geometry
-    copied_layer = None  # Placeholder for dynamically created variable that will need to be set to result of copy_layer_to_output_gdb
-    empty_layer = None  # Placeholder for dynamically created variable that will need to be set to result of delete_rows_from_existing_layer
+
+    def copy_geometry_to_scratch_gdb(self):
+            self._copied_geometry = f"arcpy.management.CopyFeatures({self.geometry_layer}, {self.scratch_gdb} + 'Copied_Geometry')"
+            return self._copied_geometry
+
+    def query_table_from_db_table(self):
+        self._query_table = f"arcpy.management.MakeQueryTable({self.database_table}, 'Query_Table')"
+        return self._query_table
+    
+    def save_query_table_to_scratch_gdb(self):
+        self._queried_table = f"arcpy.conversion.TableToTable({self._query_table}, {self.scratch_gdb}, 'Queried_Table', {self.expression})"
+        return self._queried_table
+    
+    def join_queried_table_to_geometry(self):
+        self._geometry_with_join = f"arcpy.conversion.TableToTable({self._query_table}, {self.scratch_gdb}, 'Queried_Table', {self.expression})"
+        return self._geometry_with_join
+    
+    def copy_layer_to_output_gdb(self):
+        self._copied_layer = f"arcpy.conversion.FeatureClassToFeatureClass({self.existing_layer}, {self.output_gdb}, {self.output_layer})"
+        return self._copied_layer
+    
+    def delete_rows_from_existing_layer(self):
+        self._empty_layer = f"arcpy.management.DeleteRows({self._copied_layer})"
+        return self._empty_layer
+    
+    def append_queried_table_to_existing_layer(self):
+        return f"arcpy.management.Append({self._geometry_with_join}, {self.output_gdb} + {self.output_layer}, 'NO_TEST')"
+
 
 class AsthmaCounty(Asthma):
     def __init__(self, layer_name, output_layer, existing_layer, expression):
@@ -111,6 +144,15 @@ if __name__ == "__main__":
         existing_layer= "MDHEPHT.EPHT.Asthma_NCDM_GIS_AgeAdjusted_ED_County",
         expression= f"(TYPE_ID = 17) AND (YEAR = {Asthma._year}) AND (GROUPAGE_ID = 8)") 
     
+    # An example for how to use actions to set variables
+    county_asthma_instance.copy_geometry_to_scratch_gdb()
+    county_asthma_instance.query_table_from_db_table()
+    county_asthma_instance.save_query_table_to_scratch_gdb()
+    county_asthma_instance.join_queried_table_to_geometry()
+    county_asthma_instance.copy_layer_to_output_gdb()
+    county_asthma_instance.delete_rows_from_existing_layer()
+    
+
     print("\n")
     print("CountyAsthma Instance:")
     print(f"Layer Name: {county_asthma_instance.layer_name}")
@@ -128,13 +170,13 @@ if __name__ == "__main__":
     print(f"input_join_field: {county_asthma_instance.input_join_field}")
     print(f"target_join_field: {county_asthma_instance.target_join_field}")
     print(f"output_layer: {county_asthma_instance.output_layer}")
-    print(f"copy_geometry_to_scratch_gdb: {county_asthma_instance.copy_geometry_to_scratch_gdb}")
-    print(f"query_table_from_db_table: {county_asthma_instance.query_table_from_db_table}")
-    print(f"save_query_table_to_scratch_gdb: {county_asthma_instance.save_query_table_to_scratch_gdb}")
-    print(f"join_queried_table_to_geometry: {county_asthma_instance.join_queried_table_to_geometry}")
-    print(f"copy_layer_to_output_gdb: {county_asthma_instance.copy_layer_to_output_gdb}")
-    print(f"delete_rows_from_existing_layer: {county_asthma_instance.delete_rows_from_existing_layer}")
-    print(f"append_queried_table_to_existing_layer: {county_asthma_instance.append_queried_table_to_existing_layer}")
+    print(f"copy_geometry_to_scratch_gdb: {county_asthma_instance._copied_geometry}")
+    print(f"query_table_from_db_table: {county_asthma_instance._query_table}")
+    print(f"save_query_table_to_scratch_gdb: {county_asthma_instance._queried_table}")
+    print(f"join_queried_table_to_geometry: {county_asthma_instance._geometry_with_join}")
+    print(f"copy_layer_to_output_gdb: {county_asthma_instance._copied_layer}")
+    print(f"delete_rows_from_existing_layer: {county_asthma_instance._empty_layer}")
+    print(f"append_queried_table_to_existing_layer: {county_asthma_instance.append_queried_table_to_existing_layer()}")
 
     print("\n")
 
@@ -145,6 +187,16 @@ if __name__ == "__main__":
         existing_layer="MDHEPHT.EPHT.Asthma_NCDM_GIS_Unadjusted_ED_County",
         expression= f"(TYPE_ID = 18) AND (YEAR = {Asthma._year}) AND (GROUPAGE_ID = 8)")  
     
+      # An example for how to use actions to set variables
+    county_unadjusted_asthma_instance.copy_geometry_to_scratch_gdb()
+    county_unadjusted_asthma_instance.query_table_from_db_table()
+    county_unadjusted_asthma_instance.save_query_table_to_scratch_gdb()
+    county_unadjusted_asthma_instance.join_queried_table_to_geometry()
+    county_unadjusted_asthma_instance.copy_layer_to_output_gdb()
+    county_unadjusted_asthma_instance.delete_rows_from_existing_layer()
+  
+
+
     print("CountyAsthma Instance2:")
     print(f"Layer Name: {county_unadjusted_asthma_instance.layer_name}")
     print(f"import_modules: {county_unadjusted_asthma_instance.import_modules}")
@@ -161,13 +213,13 @@ if __name__ == "__main__":
     print(f"input_join_field: {county_unadjusted_asthma_instance.input_join_field}")
     print(f"target_join_field: {county_unadjusted_asthma_instance.target_join_field}")
     print(f"output_layer: {county_unadjusted_asthma_instance.output_layer}")
-    print(f"copy_geometry_to_scratch_gdb: {county_unadjusted_asthma_instance.copy_geometry_to_scratch_gdb}")
-    print(f"query_table_from_db_table: {county_unadjusted_asthma_instance.query_table_from_db_table}")
-    print(f"save_query_table_to_scratch_gdb: {county_unadjusted_asthma_instance.save_query_table_to_scratch_gdb}")
-    print(f"join_queried_table_to_geometry: {county_unadjusted_asthma_instance.join_queried_table_to_geometry}")
-    print(f"copy_layer_to_output_gdb: {county_unadjusted_asthma_instance.copy_layer_to_output_gdb}")
-    print(f"delete_rows_from_existing_layer: {county_unadjusted_asthma_instance.delete_rows_from_existing_layer}")
-    print(f"append_queried_table_to_existing_layer: {county_unadjusted_asthma_instance.append_queried_table_to_existing_layer}")
+    print(f"copy_geometry_to_scratch_gdb: {county_unadjusted_asthma_instance._copied_geometry}")
+    print(f"query_table_from_db_table: {county_unadjusted_asthma_instance._query_table}")
+    print(f"save_query_table_to_scratch_gdb: {county_unadjusted_asthma_instance._queried_table}")
+    print(f"join_queried_table_to_geometry: {county_unadjusted_asthma_instance._geometry_with_join}")
+    print(f"copy_layer_to_output_gdb: {county_unadjusted_asthma_instance._copied_layer}")
+    print(f"delete_rows_from_existing_layer: {county_unadjusted_asthma_instance._empty_layer}")
+    print(f"append_queried_table_to_existing_layer: {county_unadjusted_asthma_instance.append_queried_table_to_existing_layer()}")
 
     print("\n")
 
@@ -178,6 +230,16 @@ if __name__ == "__main__":
         existing_layer= "MDHEPHT.EPHT.Asthma_NCDM_GIS_Unadjusted_ED_CensusTract",
         expression= f"(TYPE_ID = 18) AND (YEAR = {Asthma._year})")
     
+    # An example for how to use actions to set variables
+    tract_asthma_instance.copy_geometry_to_scratch_gdb()
+    tract_asthma_instance.query_table_from_db_table()
+    tract_asthma_instance.save_query_table_to_scratch_gdb()
+    tract_asthma_instance.join_queried_table_to_geometry()
+    tract_asthma_instance.copy_layer_to_output_gdb()
+    tract_asthma_instance.delete_rows_from_existing_layer()
+  
+
+
     print("TractAsthma Instance:")
     print(f"Layer Name: {tract_asthma_instance.layer_name}")
     print(f"import_modules: {tract_asthma_instance.import_modules}")
@@ -194,10 +256,14 @@ if __name__ == "__main__":
     print(f"input_join_field: {tract_asthma_instance.input_join_field}")
     print(f"target_join_field: {tract_asthma_instance.target_join_field}")
     print(f"output_layer: {tract_asthma_instance.output_layer}")
-    print(f"copy_geometry_to_scratch_gdb: {tract_asthma_instance.copy_geometry_to_scratch_gdb}")
-    print(f"query_table_from_db_table: {tract_asthma_instance.query_table_from_db_table}")
-    print(f"save_query_table_to_scratch_gdb: {tract_asthma_instance.save_query_table_to_scratch_gdb}")
-    print(f"join_queried_table_to_geometry: {tract_asthma_instance.join_queried_table_to_geometry}")
-    print(f"copy_layer_to_output_gdb: {tract_asthma_instance.copy_layer_to_output_gdb}")
-    print(f"delete_rows_from_existing_layer: {tract_asthma_instance.delete_rows_from_existing_layer}")
-    print(f"append_queried_table_to_existing_layer: {tract_asthma_instance.append_queried_table_to_existing_layer}")
+    print(f"copy_geometry_to_scratch_gdb: {tract_asthma_instance._copied_geometry}")
+    print(f"query_table_from_db_table: {tract_asthma_instance._query_table}")
+    print(f"save_query_table_to_scratch_gdb: {tract_asthma_instance._queried_table}")
+    print(f"join_queried_table_to_geometry: {tract_asthma_instance._geometry_with_join}")
+    print(f"copy_layer_to_output_gdb: {tract_asthma_instance._copied_layer}")
+    print(f"delete_rows_from_existing_layer: {tract_asthma_instance._empty_layer}")
+    print(f"append_queried_table_to_existing_layer: {tract_asthma_instance.append_queried_table_to_existing_layer()}")
+
+
+
+# CO example
