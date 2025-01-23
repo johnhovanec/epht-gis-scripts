@@ -4,8 +4,7 @@ class BaseClass:
         Initialize BaseClass with layer_name.
         """
         self.layer_name = layer_name
-        self.database_read = "D:/MDH//Connections2/MDH DEV mdhephtdbdev1 to _MDHEPHT_ via READ.sde"
-
+    
     # Config properties common to all instances
     import_modules = "import arcpy from sys import argv"
     allow_overwriting_output = "arcpy.env.overwriteOutput = True"
@@ -19,7 +18,7 @@ class CommonLayer(BaseClass):
                  query_table_from_db_table, save_query_table_to_scratch_gdb, join_queried_table_to_geometry, 
                  copy_layer_to_output_gdb, delete_rows_from_existing_layer, append_queried_table_to_existing_layer):
         """
-        Initialize CommonLayer with all its attributes.
+        Initialize CommonLayer with its attributes.
         """
         super().__init__(layer_name)
         self.year = year
@@ -38,13 +37,6 @@ class CommonLayer(BaseClass):
         self.copy_layer_to_output_gdb = copy_layer_to_output_gdb
         self.delete_rows_from_existing_layer = delete_rows_from_existing_layer
         self.append_queried_table_to_existing_layer = append_queried_table_to_existing_layer
-
-    def copy_geo(self, source, destination):
-        """
-        Simulate copying geographical data from source to destination.
-        """
-        print(f"Copying data from {source} to {destination}.")
-
 
 class Asthma(CommonLayer):
     def __init__(self, layer_name, output_layer, geometry, geometry_layer, existing_layer, expression, input_join_field,
@@ -88,7 +80,7 @@ class AsthmaCounty(Asthma):
         super().__init__(layer_name, output_layer, self._geometry, self._geometry_layer, 
                          existing_layer, expression, self._input_join_field, self._target_join_field)
     
-    # Properties that are specific to County instances 
+    # Properties that are specific to AsthmaCounty instances 
     _geometry = "County"
     _geometry_layer = "MDHEPHT.EPHT.GIS_County_Poly"
     _input_join_field = "MD_CODE"
@@ -103,13 +95,11 @@ class AsthmaCensusTract(Asthma):
         super().__init__(layer_name, output_layer, self._geometry, self._geometry_layer,
                          existing_layer, expression, self._input_join_field, self._target_join_field)
     
-    # Properties that are specific to CensusTract instances     
+    # Properties that are specific to AsthmaCensusTract instances     
     _geometry = "CensusTract"
     _geometry_layer = "MDHEPHT.EPHT.GIS_CensusTract20_Poly"
     _input_join_field = "GEOID"
     _target_join_field = "TRACTCODE"
-
-
 
 
 # Example usage
