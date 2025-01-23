@@ -1,4 +1,4 @@
-class BaseClass:
+class BaseLayer:
     def __init__(self, layer_name):
         """
         Initialize BaseClass with layer_name.
@@ -12,7 +12,7 @@ class BaseClass:
     scratch_gdb = ".../mdh-epht-gis-utilities/WorkingDocument/Scratch.gdb"
     output_gdb = ".../mdh-epht-gis-utilities/WorkingDocument/Outputs.gdb"
 
-class CommonLayer(BaseClass):
+class CommonLayer(BaseLayer):
     def __init__(self, layer_name, year, geometry, database_table, existing_layer, geometry_layer, expression, 
                  input_join_field, target_join_field, output_layer, copy_geometry_to_scratch_gdb, 
                  query_table_from_db_table, save_query_table_to_scratch_gdb, join_queried_table_to_geometry, 
@@ -108,7 +108,7 @@ class AsthmaCounty(Asthma):
     # Properties that are specific to AsthmaCounty instances 
     _geometry = "County"
     _geometry_layer = "MDHEPHT.EPHT.GIS_County_Poly"
-    _input_join_field = "MD_CODE"
+    _input_join_field = "MDCode"
     _target_join_field = "MDCODE"
 
 
@@ -291,7 +291,7 @@ class COCounty(CO):
     # Properties that are specific to AsthmaCounty instances 
     _geometry = "County"
     _geometry_layer = "MDHEPHT.EPHT.GIS_County_Poly"
-    _input_join_field = "MD_CODE"
+    _input_join_field = "MDCode"
     _target_join_field = "MDCODE"
 
 
