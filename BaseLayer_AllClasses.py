@@ -94,8 +94,8 @@ class Asthma(CommonLayer):
                          self.query_table_from_db_table, self.save_query_table_to_scratch_gdb, self.join_queried_table_to_geometry, 
                          self.copy_layer_to_output_gdb, self.delete_rows_from_existing_layer, self.append_queried_table_to_existing_layer)
 
-    # Properties that are common to all instances for Asthma
-    _year = 2025
+    # Properties that are common to all instances. Note this could be set as an instance variable or as part of the BaseLayer class
+    _year = 2025  
 
 class AsthmaCounty(Asthma):
     def __init__(self, layer_name, output_layer, existing_layer, expression):
@@ -189,7 +189,7 @@ if __name__ == "__main__":
   
 
 
-    print("CountyAsthma Instance2:")
+    print("CountyAsthma UnAdj:")
     print(f"Layer Name: {county_unadjusted_asthma_instance.layer_name}")
     print(f"import_modules: {county_unadjusted_asthma_instance.import_modules}")
     print(f"allow_overwriting_output: {county_unadjusted_asthma_instance.allow_overwriting_output}")
@@ -259,3 +259,122 @@ if __name__ == "__main__":
 
 
 # CO example
+class CO(CommonLayer):
+    def __init__(self, layer_name, output_layer, geometry, geometry_layer, existing_layer, expression, input_join_field,
+                 target_join_field):
+        """
+        Initialize CO with its specific attributes.
+        """
+        _database_table = f"{self.database_read} + 'MDHEPHT.epht.CO_' + {geometry}"
+        _existing_layer = f"{self.database_read} + {existing_layer}"
+        _geometry_layer = f"{self.database_read} + {geometry_layer}"
+        _expression = expression
+        _input_join_field = input_join_field
+        _target_join_field = target_join_field
+
+        super().__init__(layer_name, self._year, geometry, _database_table, _existing_layer, _geometry_layer, _expression, 
+                         _input_join_field, _target_join_field, output_layer, self.copy_geometry_to_scratch_gdb, 
+                         self.query_table_from_db_table, self.save_query_table_to_scratch_gdb, self.join_queried_table_to_geometry, 
+                         self.copy_layer_to_output_gdb, self.delete_rows_from_existing_layer, self.append_queried_table_to_existing_layer)
+
+    # Properties that are common to all instances for Asthma
+    _year = 2025
+
+class COCounty(CO):
+    def __init__(self, layer_name, output_layer, existing_layer, expression):
+        """
+        Initialize COCounty with its specific attributes.
+        """
+        super().__init__(layer_name, output_layer, self._geometry, self._geometry_layer, 
+                         existing_layer, expression, self._input_join_field, self._target_join_field)
+    
+    # Properties that are specific to AsthmaCounty instances 
+    _geometry = "County"
+    _geometry_layer = "MDHEPHT.EPHT.GIS_County_Poly"
+    _input_join_field = "MD_CODE"
+    _target_join_field = "MDCODE"
+
+
+# Example usage
+if __name__ == "__main__":
+    # Create an instance of COCounty for ED
+    county_co_ed = COCounty(
+        layer_name="CO_GIS_ED_County", 
+        output_layer="CO_GIS_ED_County",
+        existing_layer= "MDHEPHT.EPHT.CO_GIS_ED_County",
+        expression= f"(TYPE_ID = 35) AND (YEAR = {CO._year}) AND (CAUSECODE = 00)") 
+    
+    # An example for how to use actions to set variables
+    county_co_ed.copy_geometry_to_scratch_gdb()
+    county_co_ed.query_table_from_db_table()
+    county_co_ed.save_query_table_to_scratch_gdb()
+    county_co_ed.join_queried_table_to_geometry()
+    county_co_ed.copy_layer_to_output_gdb()
+    county_co_ed.delete_rows_from_existing_layer()
+    
+
+    print("\n")
+    print("COCounty for ED Instance:")
+    print(f"Layer Name: {county_co_ed.layer_name}")
+    print(f"import_modules: {county_co_ed.import_modules}")
+    print(f"allow_overwriting_output: {county_co_ed.allow_overwriting_output}")
+    print(f"database_read: {county_co_ed.database_read}")
+    print(f"scratch_gdb: {county_co_ed.scratch_gdb}")
+    print(f"output_gdb: {county_co_ed.output_gdb}")
+    print(f"year: {county_co_ed.year}")
+    print(f"geometry: {county_co_ed.geometry}")
+    print(f"database_table: {county_co_ed.database_table}")
+    print(f"existing_layer: {county_co_ed.existing_layer}")
+    print(f"geometry_layer: {county_co_ed.geometry_layer}")
+    print(f"expression: {county_co_ed.expression}")
+    print(f"input_join_field: {county_co_ed.input_join_field}")
+    print(f"target_join_field: {county_co_ed.target_join_field}")
+    print(f"output_layer: {county_co_ed.output_layer}")
+    print(f"copy_geometry_to_scratch_gdb: {county_co_ed._copied_geometry}")
+    print(f"query_table_from_db_table: {county_co_ed._query_table}")
+    print(f"save_query_table_to_scratch_gdb: {county_co_ed._queried_table}")
+    print(f"join_queried_table_to_geometry: {county_co_ed._geometry_with_join}")
+    print(f"copy_layer_to_output_gdb: {county_co_ed._copied_layer}")
+    print(f"delete_rows_from_existing_layer: {county_co_ed._empty_layer}")
+    print(f"append_queried_table_to_existing_layer: {county_co_ed.append_queried_table_to_existing_layer()}")
+
+    # Create an instance of COCounty for Hospitalization
+    county_co_hosp = COCounty(
+        layer_name="CO_GIS_Hospital_County", 
+        output_layer="CO_GIS_Hospital_County",
+        existing_layer= "MDHEPHT.EPHT.CO_GIS_Hospital_County",
+        expression= f"(TYPE_ID = 36) AND (YEAR = {CO._year}) AND (CAUSECODE = 00)") 
+    
+    # An example for how to use actions to set variables
+    county_co_hosp.copy_geometry_to_scratch_gdb()
+    county_co_hosp.query_table_from_db_table()
+    county_co_hosp.save_query_table_to_scratch_gdb()
+    county_co_hosp.join_queried_table_to_geometry()
+    county_co_hosp.copy_layer_to_output_gdb()
+    county_co_hosp.delete_rows_from_existing_layer()
+    
+
+    print("\n")
+    print("COCounty for Hosp Instance:")
+    print(f"Layer Name: {county_co_hosp.layer_name}")
+    print(f"import_modules: {county_co_hosp.import_modules}")
+    print(f"allow_overwriting_output: {county_co_hosp.allow_overwriting_output}")
+    print(f"database_read: {county_co_hosp.database_read}")
+    print(f"scratch_gdb: {county_co_hosp.scratch_gdb}")
+    print(f"output_gdb: {county_co_hosp.output_gdb}")
+    print(f"year: {county_co_hosp.year}")
+    print(f"geometry: {county_co_hosp.geometry}")
+    print(f"database_table: {county_co_hosp.database_table}")
+    print(f"existing_layer: {county_co_hosp.existing_layer}")
+    print(f"geometry_layer: {county_co_hosp.geometry_layer}")
+    print(f"expression: {county_co_hosp.expression}")
+    print(f"input_join_field: {county_co_hosp.input_join_field}")
+    print(f"target_join_field: {county_co_hosp.target_join_field}")
+    print(f"output_layer: {county_co_hosp.output_layer}")
+    print(f"copy_geometry_to_scratch_gdb: {county_co_hosp._copied_geometry}")
+    print(f"query_table_from_db_table: {county_co_hosp._query_table}")
+    print(f"save_query_table_to_scratch_gdb: {county_co_hosp._queried_table}")
+    print(f"join_queried_table_to_geometry: {county_co_hosp._geometry_with_join}")
+    print(f"copy_layer_to_output_gdb: {county_co_hosp._copied_layer}")
+    print(f"delete_rows_from_existing_layer: {county_co_hosp._empty_layer}")
+    print(f"append_queried_table_to_existing_layer: {county_co_hosp.append_queried_table_to_existing_layer()}")
