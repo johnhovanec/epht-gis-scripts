@@ -74,7 +74,6 @@ class CommonLayer(BaseClass):
     def append_queried_table_to_existing_layer(self):
         return f"arcpy.management.Append({self._geometry_with_join}, {self.output_gdb} + {self.output_layer}, 'NO_TEST')"
 
-    
 
 # Asthma example
 class Asthma(CommonLayer):
@@ -83,15 +82,15 @@ class Asthma(CommonLayer):
         """
         Initialize Asthma with its specific attributes.
         """
-        database_table = f"{self.database_read} + 'MDHEPHT.epht.Asthma_NCDM_' + {geometry}"
-        existing_layer = f"{self.database_read} + {existing_layer}"
-        geometry_layer = f"{self.database_read} + {geometry_layer}"
-        expression = expression
-        input_join_field = input_join_field
-        target_join_field = target_join_field
+        _database_table = f"{self.database_read} + 'MDHEPHT.epht.Asthma_NCDM_' + {geometry}"
+        _existing_layer = f"{self.database_read} + {existing_layer}"
+        _geometry_layer = f"{self.database_read} + {geometry_layer}"
+        _expression = expression
+        _input_join_field = input_join_field
+        _target_join_field = target_join_field
 
-        super().__init__(layer_name, self._year, geometry, database_table, existing_layer, geometry_layer, expression, 
-                         input_join_field, target_join_field, output_layer, self.copy_geometry_to_scratch_gdb, 
+        super().__init__(layer_name, self._year, geometry, _database_table, _existing_layer, _geometry_layer, _expression, 
+                         _input_join_field, _target_join_field, output_layer, self.copy_geometry_to_scratch_gdb, 
                          self.query_table_from_db_table, self.save_query_table_to_scratch_gdb, self.join_queried_table_to_geometry, 
                          self.copy_layer_to_output_gdb, self.delete_rows_from_existing_layer, self.append_queried_table_to_existing_layer)
 
