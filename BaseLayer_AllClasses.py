@@ -16,7 +16,7 @@ class BaseClass:
 class CommonLayer(BaseClass):
     def __init__(self, layer_name, year, geometry, database_table, existing_layer, geometry_layer, expression, input_join_field,
                  target_join_field, output_layer, copy_geometry_to_scratch_gdb, query_table_from_db_table, 
-                 save_query_table_to_scratch_gdb, join_queried_table_to_geometry):
+                 save_query_table_to_scratch_gdb, join_queried_table_to_geometry, copy_layer_to_output_gdb):
         """
         Initialize CommonLayer with all its attributes.
         """
@@ -34,6 +34,7 @@ class CommonLayer(BaseClass):
         self.query_table_from_db_table = query_table_from_db_table
         self.save_query_table_to_scratch_gdb = save_query_table_to_scratch_gdb
         self.join_queried_table_to_geometry = join_queried_table_to_geometry
+        self.copy_layer_to_output_gdb = copy_layer_to_output_gdb
         
     def copy_geo(self, source, destination):
         """
@@ -57,10 +58,11 @@ class Asthma(CommonLayer):
         copy_geometry_to_scratch_gdb = f"{self.copied_geometry} = arcpy.management.CopyFeatures({geometry_layer}, {self.scratch_gdb} + 'Copied_Geometry')"
         query_table_from_db_table = f"{self.query_table} = arcpy.management.MakeQueryTable({database_table}, 'Query_Table')"
         save_query_table_to_scratch_gdb = f"{self.queried_table} = arcpy.conversion.TableToTable({self.query_table}, {self.scratch_gdb}, 'Queried_Table', {expression})"
-        joined_queried_table_to_geometry = f"{self.geometry_with_join} = arcpy.management.JoinField({self.copied_geometry}, {input_join_field}, {self.queried_table}, {target_join_field})"
+        join_queried_table_to_geometry = f"{self.geometry_with_join} = arcpy.management.JoinField({self.copied_geometry}, {input_join_field}, {self.queried_table}, {target_join_field})"
+        copy_layer_to_output_gdb = f"{self.copied_layer} = arcpy.conversion.FeatureClassToFeatureClass({existing_layer}, {self.output_gdb}, {output_layer})"
         super().__init__(layer_name, self.year, geometry, database_table, existing_layer, geometry_layer, expression, 
                          input_join_field, target_join_field, output_layer, copy_geometry_to_scratch_gdb, 
-                         query_table_from_db_table, save_query_table_to_scratch_gdb, joined_queried_table_to_geometry)
+                         query_table_from_db_table, save_query_table_to_scratch_gdb, join_queried_table_to_geometry, copy_layer_to_output_gdb)
 
     # Properties that are common to all instances for Asthma
     year = 2025
@@ -133,6 +135,7 @@ if __name__ == "__main__":
     print(f"query_table_from_db_table: {county_asthma_instance.query_table_from_db_table}")
     print(f"save_query_table_to_scratch_gdb: {county_asthma_instance.save_query_table_to_scratch_gdb}")
     print(f"join_queried_table_to_geometry: {county_asthma_instance.join_queried_table_to_geometry}")
+    print(f"copy_layer_to_output_gdb: {county_asthma_instance.copy_layer_to_output_gdb}")
 
     print("\n")
 
@@ -163,6 +166,7 @@ if __name__ == "__main__":
     print(f"query_table_from_db_table: {county_unadjusted_asthma_instance.query_table_from_db_table}")
     print(f"save_query_table_to_scratch_gdb: {county_unadjusted_asthma_instance.save_query_table_to_scratch_gdb}")
     print(f"join_queried_table_to_geometry: {county_unadjusted_asthma_instance.join_queried_table_to_geometry}")
+    print(f"copy_layer_to_output_gdb: {county_unadjusted_asthma_instance.copy_layer_to_output_gdb}")
 
     print("\n")
 
@@ -193,3 +197,4 @@ if __name__ == "__main__":
     print(f"query_table_from_db_table: {tract_asthma_instance.query_table_from_db_table}")
     print(f"save_query_table_to_scratch_gdb: {tract_asthma_instance.save_query_table_to_scratch_gdb}")
     print(f"join_queried_table_to_geometry: {tract_asthma_instance.join_queried_table_to_geometry}")
+    print(f"copy_layer_to_output_gdb: {tract_asthma_instance.copy_layer_to_output_gdb}")
