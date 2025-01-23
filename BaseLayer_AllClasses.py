@@ -104,7 +104,7 @@ class AsthmaCensusTract(Asthma):
 
 # Example usage
 if __name__ == "__main__":
-    # Create an instance of AsthmaCounty
+    # Create an instance of AsthmaCounty for age adjusted
     county_asthma_instance = AsthmaCounty(
         layer_name="Asthma_NCDM_GIS_AgeAdjusted_ED_County", 
         output_layer="Asthma_NCDM_GIS_AgeAdjusted_ED_County",
@@ -138,7 +138,7 @@ if __name__ == "__main__":
 
     print("\n")
 
-    # Create an instance of AsthmaCounty
+    # Create an instance of AsthmaCounty for unadjusted
     county_unadjusted_asthma_instance = AsthmaCounty(
         layer_name="Asthma_NCDM_GIS_Unadjusted_ED_County", 
         output_layer="Asthma_NCDM_GIS_Unadjusted_ED_County",
@@ -171,7 +171,7 @@ if __name__ == "__main__":
 
     print("\n")
 
-    #  # Create an instance of CensusTractAsthma
+    #  # Create an instance of AsthmaCensusTract
     tract_asthma_instance = AsthmaCensusTract(
         layer_name="Asthma_NCDM_GIS_Unadjusted_ED_CensusTract", 
         output_layer="Asthma_NCDM_GIS_Unadjusted_ED_CensusTract",
