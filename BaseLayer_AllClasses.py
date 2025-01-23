@@ -38,7 +38,7 @@ class CommonLayer(BaseClass):
         self.delete_rows_from_existing_layer = delete_rows_from_existing_layer
         self.append_queried_table_to_existing_layer = append_queried_table_to_existing_layer
 
-    # Properties that store the results of actions common to all instances
+    # Properties that store the results of methods
     _copied_geometry = None  # Placeholder for dynamically created variable that will need to be set to result of copy_geometry_to_scratch_gdb
     _query_table = None  # Placeholder for dynamically created variable that will need to be set to result of query_table_from_db_table
     _queried_table = None  # Placeholder for dynamically created variable that will need to be set to result of save_query_table_to_scratch_gdb
@@ -46,30 +46,7 @@ class CommonLayer(BaseClass):
     _copied_layer = None  # Placeholder for dynamically created variable that will need to be set to result of copy_layer_to_output_gdb
     _empty_layer = None  # Placeholder for dynamically created variable that will need to be set to result of delete_rows_from_existing_layer
 
-    
-
-# Asthma example
-class Asthma(CommonLayer):
-    def __init__(self, layer_name, output_layer, geometry, geometry_layer, existing_layer, expression, input_join_field,
-                 target_join_field):
-        """
-        Initialize Asthma with its specific attributes.
-        """
-        database_table = f"{self.database_read} + 'MDHEPHT.epht.Asthma_NCDM_' + {geometry}"
-        existing_layer = f"{self.database_read} + {existing_layer}"
-        geometry_layer = f"{self.database_read} + {geometry_layer}"
-        expression = expression
-        input_join_field = input_join_field
-        target_join_field = target_join_field
-
-        super().__init__(layer_name, self._year, geometry, database_table, existing_layer, geometry_layer, expression, 
-                         input_join_field, target_join_field, output_layer, self.copy_geometry_to_scratch_gdb, 
-                         self.query_table_from_db_table, self.save_query_table_to_scratch_gdb, self.join_queried_table_to_geometry, 
-                         self.copy_layer_to_output_gdb, self.delete_rows_from_existing_layer, self.append_queried_table_to_existing_layer)
-
-    # Properties that are common to all instances for Asthma
-    _year = 2025
-
+    # Class methods that are common to all instances
     def copy_geometry_to_scratch_gdb(self):
             self._copied_geometry = f"arcpy.management.CopyFeatures({self.geometry_layer}, {self.scratch_gdb} + 'Copied_Geometry')"
             return self._copied_geometry
@@ -97,6 +74,29 @@ class Asthma(CommonLayer):
     def append_queried_table_to_existing_layer(self):
         return f"arcpy.management.Append({self._geometry_with_join}, {self.output_gdb} + {self.output_layer}, 'NO_TEST')"
 
+    
+
+# Asthma example
+class Asthma(CommonLayer):
+    def __init__(self, layer_name, output_layer, geometry, geometry_layer, existing_layer, expression, input_join_field,
+                 target_join_field):
+        """
+        Initialize Asthma with its specific attributes.
+        """
+        database_table = f"{self.database_read} + 'MDHEPHT.epht.Asthma_NCDM_' + {geometry}"
+        existing_layer = f"{self.database_read} + {existing_layer}"
+        geometry_layer = f"{self.database_read} + {geometry_layer}"
+        expression = expression
+        input_join_field = input_join_field
+        target_join_field = target_join_field
+
+        super().__init__(layer_name, self._year, geometry, database_table, existing_layer, geometry_layer, expression, 
+                         input_join_field, target_join_field, output_layer, self.copy_geometry_to_scratch_gdb, 
+                         self.query_table_from_db_table, self.save_query_table_to_scratch_gdb, self.join_queried_table_to_geometry, 
+                         self.copy_layer_to_output_gdb, self.delete_rows_from_existing_layer, self.append_queried_table_to_existing_layer)
+
+    # Properties that are common to all instances for Asthma
+    _year = 2025
 
 class AsthmaCounty(Asthma):
     def __init__(self, layer_name, output_layer, existing_layer, expression):
