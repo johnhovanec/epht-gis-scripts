@@ -90,7 +90,7 @@ class Asthma(CommonLayer):
         return self._queried_table
     
     def join_queried_table_to_geometry(self):
-        self._geometry_with_join = f"arcpy.conversion.TableToTable({self._query_table}, {self.scratch_gdb}, 'Queried_Table', {self.expression})"
+        self._geometry_with_join = f"arcpy.management.JoinField({self._copied_geometry}, {self.input_join_field}, {self._queried_table}, {self.target_join_field})"
         return self._geometry_with_join
     
     def copy_layer_to_output_gdb(self):
